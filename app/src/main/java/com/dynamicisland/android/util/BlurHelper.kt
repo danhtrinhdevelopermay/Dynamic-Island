@@ -1,68 +1,47 @@
 package com.dynamicisland.android.util
 
-import android.graphics.Outline
 import android.os.Build
-import android.view.View
-import android.view.ViewOutlineProvider
 import android.view.WindowManager
 import androidx.cardview.widget.CardView
 
 object BlurHelper {
     
-    private const val COLLAPSED_BLUR_RADIUS = 30
-    private const val EXPANDED_BLUR_RADIUS = 40
+    private const val BLUR_BEHIND_RADIUS = 15
     
     fun isBlurSupported(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
     }
     
     fun applyBlurToCardView(cardView: CardView, blurRadius: Int) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            try {
-                cardView.clipToOutline = true
-                cardView.outlineProvider = object : ViewOutlineProvider() {
-                    override fun getOutline(view: View, outline: Outline) {
-                        outline.setRoundRect(
-                            0, 0,
-                            view.width, view.height,
-                            cardView.radius
-                        )
-                    }
-                }
-                setBlurRadiusViaReflection(cardView, blurRadius)
-            } catch (e: Exception) {
-                // Fallback silently on error
-            }
-        }
+        cardView.cardElevation = 12f
     }
     
     fun removeBlurFromCardView(cardView: CardView) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            try {
-                setBlurRadiusViaReflection(cardView, 0)
-            } catch (e: Exception) {
-                // Ignore
-            }
-        }
-    }
-    
-    private fun setBlurRadiusViaReflection(view: View, blurRadius: Int) {
-        try {
-            val method = View::class.java.getMethod("setBackgroundBlurRadius", Int::class.javaPrimitiveType)
-            method.invoke(view, blurRadius)
-        } catch (e: Exception) {
-            // Method not available on this device
-        }
+        cardView.cardElevation = 8f
     }
     
     fun configureBlurLayoutParams(
         params: WindowManager.LayoutParams,
-        blurRadius: Int = 0
+        enableBlur: Boolean = true
     ): WindowManager.LayoutParams {
+        if (enableBlur && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                val flagBlurBehind = WindowManager.LayoutParams::class.java
+                    .getField("FLAG_BLUR_BEHIND")
+                    .getInt(null)
+                params.flags = params.flags or flagBlurBehind
+                
+                val setBlurMethod = WindowManager.LayoutParams::class.java
+                    .getMethod("setBlurBehindRadius", Int::class.javaPrimitiveType)
+                setBlurMethod.invoke(params, BLUR_BEHIND_RADIUS)
+            } catch (e: Exception) {
+                // Blur not available
+            }
+        }
         return params
     }
     
-    fun getCollapsedBlurRadius(): Int = COLLAPSED_BLUR_RADIUS
+    fun getCollapsedBlurRadius(): Int = BLUR_BEHIND_RADIUS
     
-    fun getExpandedBlurRadius(): Int = EXPANDED_BLUR_RADIUS
+    fun getExpandedBlurRadius(): Int = BLUR_BEHIND_RADIUS
 }
