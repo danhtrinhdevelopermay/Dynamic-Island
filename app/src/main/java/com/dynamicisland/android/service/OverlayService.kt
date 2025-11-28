@@ -254,31 +254,8 @@ class OverlayService : Service() {
     
     private fun updateCardBackgroundForBlur(isExpanded: Boolean) {
         overlayView?.findViewById<CardView>(R.id.dynamicIslandCard)?.apply {
-            val bgColor = if (BlurHelper.isBlurSupported()) {
-                if (isExpanded) {
-                    ContextCompat.getColor(context, R.color.blur_overlay_expanded)
-                } else {
-                    ContextCompat.getColor(context, R.color.dynamic_island_bg_blur)
-                }
-            } else {
-                ContextCompat.getColor(context, R.color.dynamic_island_bg)
-            }
+            val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg)
             setCardBackgroundColor(bgColor)
-        }
-    }
-    
-    @android.annotation.SuppressLint("NewApi")
-    private fun updateBlurRadius(blurRadius: Int) {
-        if (!BlurHelper.isBlurSupported()) return
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
-        
-        val view = overlayView ?: return
-        try {
-            val params = view.layoutParams as WindowManager.LayoutParams
-            params.blurBehindRadius = blurRadius
-            windowManager.updateViewLayout(view, params)
-        } catch (e: Exception) {
-            Log.e(TAG, "Error updating blur radius", e)
         }
     }
     
@@ -407,7 +384,6 @@ class OverlayService : Service() {
             findViewById<LinearLayout>(R.id.expandedView)?.visibility = View.VISIBLE
             
             updateCardBackgroundForBlur(true)
-            updateBlurRadius(BlurHelper.getExpandedBlurRadius())
             
             val params = layoutParams as WindowManager.LayoutParams
             
@@ -446,7 +422,6 @@ class OverlayService : Service() {
             val params = layoutParams as WindowManager.LayoutParams
             
             updateCardBackgroundForBlur(false)
-            updateBlurRadius(BlurHelper.getCollapsedBlurRadius())
             
             val widthAnimator = ValueAnimator.ofInt(params.width, dpToPx(COLLAPSED_WIDTH_DP))
             val heightAnimator = ValueAnimator.ofInt(params.height, dpToPx(COLLAPSED_HEIGHT_DP))

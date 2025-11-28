@@ -5,17 +5,17 @@
     <color name="primary_dark">#000000</color>
     <color name="accent">#007AFF</color>
     
-    <!-- Dynamic Island Colors with Blur Support -->
-    <color name="dynamic_island_bg">#1C1C1E</color>
-    <color name="dynamic_island_bg_blur">#B31C1C1E</color>
-    <color name="dynamic_island_bg_blur_light">#99292929</color>
+    <!-- Dynamic Island Colors - Solid Black like iOS -->
+    <color name="dynamic_island_bg">#000000</color>
+    <color name="dynamic_island_bg_blur">#000000</color>
+    <color name="dynamic_island_bg_blur_light">#000000</color>
     <color name="dynamic_island_text_primary">#FFFFFF</color>
     <color name="dynamic_island_text_secondary">#8E8E93</color>
     <color name="dynamic_island_divider">#3A3A3C</color>
     
     <!-- Blur Overlay Colors -->
-    <color name="blur_overlay_bg">#CC1A1A1A</color>
-    <color name="blur_overlay_expanded">#E61C1C1E</color>
+    <color name="blur_overlay_bg">#000000</color>
+    <color name="blur_overlay_expanded">#000000</color>
     
     <!-- Button Colors -->
     <color name="button_positive">#34C759</color>
