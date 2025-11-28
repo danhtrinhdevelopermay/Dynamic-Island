@@ -267,6 +267,7 @@ class OverlayService : Service() {
         }
     }
     
+    @android.annotation.SuppressLint("NewApi")
     private fun updateBlurRadius(blurRadius: Int) {
         if (!BlurHelper.isBlurSupported()) return
         
