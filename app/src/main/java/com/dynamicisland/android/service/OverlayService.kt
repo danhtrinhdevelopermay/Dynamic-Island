@@ -270,17 +270,15 @@ class OverlayService : Service() {
     @android.annotation.SuppressLint("NewApi")
     private fun updateBlurRadius(blurRadius: Int) {
         if (!BlurHelper.isBlurSupported()) return
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.S) return
         
-        overlayView?.let { view ->
-            try {
-                val params = view.layoutParams as WindowManager.LayoutParams
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    params.blurBehindRadius = blurRadius
-                    windowManager.updateViewLayout(view, params)
-                }
-            } catch (e: Exception) {
-                Log.e(TAG, "Error updating blur radius", e)
-            }
+        val view = overlayView ?: return
+        try {
+            val params = view.layoutParams as WindowManager.LayoutParams
+            params.blurBehindRadius = blurRadius
+            windowManager.updateViewLayout(view, params)
+        } catch (e: Exception) {
+            Log.e(TAG, "Error updating blur radius", e)
         }
     }
     
