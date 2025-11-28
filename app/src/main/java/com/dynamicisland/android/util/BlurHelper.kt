@@ -11,6 +11,7 @@ object BlurHelper {
     
     private const val COLLAPSED_BLUR_RADIUS = 30
     private const val EXPANDED_BLUR_RADIUS = 40
+    private const val BLUR_BEHIND_RADIUS = 20
     
     fun isBlurSupported(): Boolean {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
@@ -57,9 +58,38 @@ object BlurHelper {
     
     fun configureBlurLayoutParams(
         params: WindowManager.LayoutParams,
-        blurRadius: Int = 0
+        blurRadius: Int = BLUR_BEHIND_RADIUS
     ): WindowManager.LayoutParams {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            try {
+                params.flags = params.flags or getBlurBehindFlag()
+                setBlurBehindRadiusViaReflection(params, blurRadius)
+            } catch (e: Exception) {
+                // Blur not supported
+            }
+        }
         return params
+    }
+    
+    private fun getBlurBehindFlag(): Int {
+        return try {
+            val field = WindowManager.LayoutParams::class.java.getField("FLAG_BLUR_BEHIND")
+            field.getInt(null)
+        } catch (e: Exception) {
+            0
+        }
+    }
+    
+    private fun setBlurBehindRadiusViaReflection(params: WindowManager.LayoutParams, blurRadius: Int) {
+        try {
+            val method = WindowManager.LayoutParams::class.java.getMethod(
+                "setBlurBehindRadius",
+                Int::class.javaPrimitiveType
+            )
+            method.invoke(params, blurRadius)
+        } catch (e: Exception) {
+            // Method not available
+        }
     }
     
     fun getCollapsedBlurRadius(): Int = COLLAPSED_BLUR_RADIUS

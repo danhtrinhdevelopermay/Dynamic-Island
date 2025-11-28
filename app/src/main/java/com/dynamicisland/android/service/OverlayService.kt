@@ -217,7 +217,7 @@ class OverlayService : Service() {
     private fun createOverlayView() {
         overlayView = LayoutInflater.from(this).inflate(R.layout.dynamic_island_layout, null)
         
-        val layoutParams = WindowManager.LayoutParams(
+        var layoutParams = WindowManager.LayoutParams(
             dpToPx(COLLAPSED_WIDTH_DP),
             dpToPx(COLLAPSED_HEIGHT_DP),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -234,6 +234,8 @@ class OverlayService : Service() {
             gravity = Gravity.TOP or Gravity.CENTER_HORIZONTAL
             y = dpToPx(12)
         }
+        
+        layoutParams = BlurHelper.configureBlurLayoutParams(layoutParams)
         
         applyBlurEffect(false)
         
