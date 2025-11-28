@@ -6,9 +6,9 @@
     <color name="accent">#007AFF</color>
     
     <!-- Dynamic Island Colors -->
-    <color name="dynamic_island_bg">#000000</color>
-    <color name="dynamic_island_bg_blur">#CC1C1C1E</color>
-    <color name="dynamic_island_bg_blur_light">#B31C1C1E</color>
+    <color name="dynamic_island_bg">#DD000000</color>
+    <color name="dynamic_island_bg_blur">#E6000000</color>
+    <color name="dynamic_island_bg_blur_light">#CC1C1C1E</color>
     <color name="dynamic_island_text_primary">#FFFFFF</color>
     <color name="dynamic_island_text_secondary">#8E8E93</color>
     <color name="dynamic_island_divider">#3A3A3C</color>
