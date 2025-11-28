@@ -257,10 +257,22 @@ class OverlayService : Service() {
                 BlurHelper.getCollapsedBlurRadius()
             }
             
-            if (BlurHelper.isBlurSupported()) {
+            if (BlurHelper.isBlurSupported() && BlurHelper.isBlurEnabled(context)) {
                 val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg_blur)
                 setCardBackgroundColor(bgColor)
                 BlurHelper.applyBlurToCardView(this, blurRadius)
+                
+                overlayView?.let { view ->
+                    val params = view.layoutParams as? WindowManager.LayoutParams
+                    params?.let {
+                        BlurHelper.updateBlurRadius(it, blurRadius)
+                        try {
+                            windowManager.updateViewLayout(view, it)
+                        } catch (e: Exception) {
+                            // Ignore
+                        }
+                    }
+                }
             } else {
                 val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg)
                 setCardBackgroundColor(bgColor)
