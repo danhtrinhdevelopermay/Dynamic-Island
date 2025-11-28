@@ -111,6 +111,11 @@ class DynamicIslandService : NotificationListenerService() {
     }
     
     private fun sendNotificationToOverlay(data: NotificationData) {
+        if (!AppUtils.canDrawOverlays(this)) {
+            Log.w(TAG, "Cannot draw overlays, skipping notification display")
+            return
+        }
+        
         val intent = Intent(this, OverlayService::class.java).apply {
             action = OverlayService.ACTION_SHOW_NOTIFICATION
             putExtra(OverlayService.EXTRA_PACKAGE_NAME, data.packageName)
@@ -123,20 +128,37 @@ class DynamicIslandService : NotificationListenerService() {
             putExtra(OverlayService.EXTRA_ACTION_TITLES, actionTitles)
         }
         
-        startService(intent)
+        try {
+            startForegroundService(intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start overlay service", e)
+        }
     }
     
     private fun startOverlayService() {
+        if (!AppUtils.canDrawOverlays(this)) {
+            Log.w(TAG, "Cannot draw overlays, not starting overlay service")
+            return
+        }
+        
         val intent = Intent(this, OverlayService::class.java).apply {
             action = OverlayService.ACTION_START
         }
-        startService(intent)
+        try {
+            startForegroundService(intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to start overlay service", e)
+        }
     }
     
     private fun stopOverlayService() {
         val intent = Intent(this, OverlayService::class.java).apply {
             action = OverlayService.ACTION_STOP
         }
-        startService(intent)
+        try {
+            startService(intent)
+        } catch (e: Exception) {
+            Log.e(TAG, "Failed to stop overlay service", e)
+        }
     }
 }

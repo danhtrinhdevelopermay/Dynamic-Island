@@ -95,10 +95,17 @@ class OverlayService : Service() {
         }
     }
     
+    private var isForegroundStarted = false
+    
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (!isForegroundStarted) {
+            startForegroundServiceNotification()
+            isForegroundStarted = true
+        }
+        
         when (intent?.action) {
             ACTION_START -> {
-                startForegroundService()
+                Log.d(TAG, "OverlayService started")
             }
             ACTION_STOP -> {
                 stopSelf()
@@ -111,6 +118,7 @@ class OverlayService : Service() {
                 val timestamp = intent.getLongExtra(EXTRA_TIMESTAMP, System.currentTimeMillis())
                 val actionTitles = intent.getStringArrayExtra(EXTRA_ACTION_TITLES) ?: emptyArray()
                 
+                Log.d(TAG, "Showing notification from: $packageName")
                 showNotification(packageName, appName, title, content, timestamp, actionTitles.toList())
             }
             ACTION_HIDE -> {
@@ -125,6 +133,7 @@ class OverlayService : Service() {
     
     override fun onDestroy() {
         super.onDestroy()
+        isForegroundStarted = false
         hideOverlay()
         try {
             unregisterReceiver(notificationRemovedReceiver)
@@ -147,7 +156,7 @@ class OverlayService : Service() {
         notificationManager.createNotificationChannel(channel)
     }
     
-    private fun startForegroundService() {
+    private fun startForegroundServiceNotification() {
         val pendingIntent = PendingIntent.getActivity(
             this,
             0,
