@@ -5,7 +5,6 @@ import android.os.Build
 import android.view.View
 import android.view.ViewOutlineProvider
 import android.view.WindowManager
-import androidx.annotation.RequiresApi
 import androidx.cardview.widget.CardView
 
 object BlurHelper {
@@ -30,7 +29,7 @@ object BlurHelper {
                         )
                     }
                 }
-                applyBlurRadiusInternal(cardView, blurRadius)
+                setBlurRadiusViaReflection(cardView, blurRadius)
             } catch (e: Exception) {
                 // Fallback silently on error
             }
@@ -40,16 +39,20 @@ object BlurHelper {
     fun removeBlurFromCardView(cardView: CardView) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
             try {
-                applyBlurRadiusInternal(cardView, 0)
+                setBlurRadiusViaReflection(cardView, 0)
             } catch (e: Exception) {
                 // Ignore
             }
         }
     }
     
-    @RequiresApi(Build.VERSION_CODES.S)
-    private fun applyBlurRadiusInternal(view: View, blurRadius: Int) {
-        view.setBackgroundBlurRadius(blurRadius)
+    private fun setBlurRadiusViaReflection(view: View, blurRadius: Int) {
+        try {
+            val method = View::class.java.getMethod("setBackgroundBlurRadius", Int::class.javaPrimitiveType)
+            method.invoke(view, blurRadius)
+        } catch (e: Exception) {
+            // Method not available on this device
+        }
     }
     
     fun configureBlurLayoutParams(
