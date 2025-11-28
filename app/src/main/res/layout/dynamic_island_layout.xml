@@ -6,9 +6,9 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:layout_gravity="center_horizontal"
-    app:cardBackgroundColor="@color/dynamic_island_bg"
+    app:cardBackgroundColor="@color/dynamic_island_bg_blur"
     app:cardCornerRadius="@dimen/dynamic_island_corner_radius"
-    app:cardElevation="12dp">
+    app:cardElevation="8dp">
 
     <LinearLayout
         android:id="@+id/contentContainer"

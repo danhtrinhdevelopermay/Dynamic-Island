@@ -93,6 +93,11 @@ Requires Android SDK and JDK 17:
 - Created Dynamic Island overlay UI with animations
 - Added GitHub Actions workflow for APK builds
 - Vietnamese language support for UI strings
+- Added backdrop blur effect for Dynamic Island overlay (2025-11-28)
+  - Uses FLAG_BLUR_BEHIND and blurBehindRadius for Android 12+
+  - Semi-transparent background colors for blur effect
+  - BlurHelper utility class for managing blur effects
+  - Fallback to solid background on older Android versions
 
 ## Notes
 
