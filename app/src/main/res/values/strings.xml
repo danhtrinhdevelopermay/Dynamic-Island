@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Dynamic Island</string>
+    <string name="notification_channel_name">Dynamic Island Service</string>
+    <string name="notification_channel_description">Hiển thị thông báo dạng Dynamic Island</string>
+    <string name="overlay_permission_title">Quyền hiển thị trên ứng dụng khác</string>
+    <string name="overlay_permission_message">Ứng dụng cần quyền hiển thị trên các ứng dụng khác để hiển thị Dynamic Island. Nhấn \"Cho phép\" để mở cài đặt.</string>
+    <string name="notification_permission_title">Quyền truy cập thông báo</string>
+    <string name="notification_permission_message">Ứng dụng cần quyền truy cập thông báo để hiển thị Dynamic Island. Nhấn \"Cho phép\" để mở cài đặt.</string>
+    <string name="permission_granted">Quyền đã được cấp</string>
+    <string name="permission_denied">Quyền bị từ chối</string>
+    <string name="enable_service">Bật Dynamic Island</string>
+    <string name="disable_service">Tắt Dynamic Island</string>
+    <string name="service_running">Dynamic Island đang chạy</string>
+    <string name="service_stopped">Dynamic Island đã tắt</string>
+    <string name="settings">Cài đặt</string>
+    <string name="about">Về ứng dụng</string>
+    <string name="version">Phiên bản</string>
+    <string name="developer">Nhà phát triển</string>
+    <string name="grant_permission">Cấp quyền</string>
+    <string name="cancel">Hủy</string>
+    <string name="ok">OK</string>
+    <string name="notification_access_required">Cần quyền truy cập thông báo</string>
+    <string name="overlay_access_required">Cần quyền hiển thị trên ứng dụng khác</string>
+    <string name="all_permissions_granted">Tất cả quyền đã được cấp!</string>
+    <string name="tap_to_enable">Nhấn để bật Dynamic Island</string>
+    <string name="foreground_notification_title">Dynamic Island đang hoạt động</string>
+    <string name="foreground_notification_text">Nhấn để mở ứng dụng</string>
+</resources>

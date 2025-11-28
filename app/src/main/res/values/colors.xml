@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary Colors -->
+    <color name="primary">#1C1C1E</color>
+    <color name="primary_dark">#000000</color>
+    <color name="accent">#007AFF</color>
+    
+    <!-- Dynamic Island Colors -->
+    <color name="dynamic_island_bg">#1C1C1E</color>
+    <color name="dynamic_island_text_primary">#FFFFFF</color>
+    <color name="dynamic_island_text_secondary">#8E8E93</color>
+    <color name="dynamic_island_divider">#3A3A3C</color>
+    
+    <!-- Button Colors -->
+    <color name="button_positive">#34C759</color>
+    <color name="button_negative">#FF3B30</color>
+    <color name="button_neutral">#5856D6</color>
+    
+    <!-- Background Colors -->
+    <color name="background_light">#F2F2F7</color>
+    <color name="background_dark">#000000</color>
+    <color name="card_background">#FFFFFF</color>
+    <color name="card_background_dark">#1C1C1E</color>
+    
+    <!-- Status Colors -->
+    <color name="status_active">#34C759</color>
+    <color name="status_inactive">#FF3B30</color>
+    <color name="status_warning">#FF9500</color>
+    
+    <!-- Transparent -->
+    <color name="transparent">#00000000</color>
+    <color name="semi_transparent_black">#80000000</color>
+</resources>
