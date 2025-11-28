@@ -33,9 +33,11 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.dynamicisland.android.R
 import com.dynamicisland.android.ui.MainActivity
 import com.dynamicisland.android.util.AppUtils
+import com.dynamicisland.android.util.BlurHelper
 import com.dynamicisland.android.util.PreferencesManager
 
 class OverlayService : Service() {
@@ -215,7 +217,7 @@ class OverlayService : Service() {
     private fun createOverlayView() {
         overlayView = LayoutInflater.from(this).inflate(R.layout.dynamic_island_layout, null)
         
-        val layoutParams = WindowManager.LayoutParams(
+        var layoutParams = WindowManager.LayoutParams(
             dpToPx(COLLAPSED_WIDTH_DP),
             dpToPx(COLLAPSED_HEIGHT_DP),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -233,6 +235,13 @@ class OverlayService : Service() {
             y = dpToPx(12)
         }
         
+        layoutParams = BlurHelper.configureBlurLayoutParams(
+            layoutParams,
+            BlurHelper.getCollapsedBlurRadius()
+        )
+        
+        updateCardBackgroundForBlur(false)
+        
         setupTouchListener()
         
         try {
@@ -240,6 +249,37 @@ class OverlayService : Service() {
             isShowing = true
         } catch (e: Exception) {
             Log.e(TAG, "Error adding overlay view", e)
+        }
+    }
+    
+    private fun updateCardBackgroundForBlur(isExpanded: Boolean) {
+        overlayView?.findViewById<CardView>(R.id.dynamicIslandCard)?.apply {
+            val bgColor = if (BlurHelper.isBlurSupported()) {
+                if (isExpanded) {
+                    ContextCompat.getColor(context, R.color.blur_overlay_expanded)
+                } else {
+                    ContextCompat.getColor(context, R.color.dynamic_island_bg_blur)
+                }
+            } else {
+                ContextCompat.getColor(context, R.color.dynamic_island_bg)
+            }
+            setCardBackgroundColor(bgColor)
+        }
+    }
+    
+    private fun updateBlurRadius(blurRadius: Int) {
+        if (!BlurHelper.isBlurSupported()) return
+        
+        overlayView?.let { view ->
+            try {
+                val params = view.layoutParams as WindowManager.LayoutParams
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                    params.blurBehindRadius = blurRadius
+                    windowManager.updateViewLayout(view, params)
+                }
+            } catch (e: Exception) {
+                Log.e(TAG, "Error updating blur radius", e)
+            }
         }
     }
     
@@ -367,6 +407,9 @@ class OverlayService : Service() {
             findViewById<LinearLayout>(R.id.collapsedView)?.visibility = View.GONE
             findViewById<LinearLayout>(R.id.expandedView)?.visibility = View.VISIBLE
             
+            updateCardBackgroundForBlur(true)
+            updateBlurRadius(BlurHelper.getExpandedBlurRadius())
+            
             val params = layoutParams as WindowManager.LayoutParams
             
             val widthAnimator = ValueAnimator.ofInt(params.width, dpToPx(EXPANDED_WIDTH_DP))
@@ -402,6 +445,9 @@ class OverlayService : Service() {
     private fun collapseOverlay() {
         overlayView?.apply {
             val params = layoutParams as WindowManager.LayoutParams
+            
+            updateCardBackgroundForBlur(false)
+            updateBlurRadius(BlurHelper.getCollapsedBlurRadius())
             
             val widthAnimator = ValueAnimator.ofInt(params.width, dpToPx(COLLAPSED_WIDTH_DP))
             val heightAnimator = ValueAnimator.ofInt(params.height, dpToPx(COLLAPSED_HEIGHT_DP))
