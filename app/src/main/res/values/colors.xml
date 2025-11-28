@@ -16,6 +16,7 @@
     <!-- Blur Overlay Colors -->
     <color name="blur_overlay_bg">#000000</color>
     <color name="blur_overlay_expanded">#000000</color>
+    <color name="blur_base_color">#1A1A1A</color>
     
     <!-- Button Colors -->
     <color name="button_positive">#34C759</color>

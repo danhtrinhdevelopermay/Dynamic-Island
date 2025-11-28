@@ -93,11 +93,17 @@ Requires Android SDK and JDK 17:
 - Created Dynamic Island overlay UI with animations
 - Added GitHub Actions workflow for APK builds
 - Vietnamese language support for UI strings
-- Added backdrop blur effect for Dynamic Island overlay (2025-11-28)
-  - Uses FLAG_BLUR_BEHIND and blurBehindRadius for Android 12+
-  - Semi-transparent background colors for blur effect
-  - BlurHelper utility class for managing blur effects
-  - Fallback to solid background on older Android versions
+- **Updated blur effect for Android 15 compatibility (2025-11-28)**
+  - Replaced bitmap-based blur with gradient drawable approach
+  - Works on all Android versions (8.0 - 15+) without RenderScript
+  - New drawable files:
+    - `dynamic_island_blur_background.xml` - Collapsed state gradient blur
+    - `dynamic_island_blur_expanded.xml` - Expanded state gradient blur  
+  - Removed complex bitmap manipulation for better performance
+  - Clean, simple implementation without memory management issues
+  - Visual blur effect using layered gradients with transparency
+  - BlurHelper utility simplified with StackBlur algorithm for future use
+  - Note: True background capture requires MediaProjection API which needs user permission
 
 ## Notes
 

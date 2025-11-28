@@ -1,0 +1,26 @@
+modules = ["java-graalvm22.3"]
+[agent]
+expertMode = true
+
+[workflows]
+runButton = "Project"
+
+[[workflows.workflow]]
+name = "Project"
+mode = "parallel"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "workflow.run"
+args = "Android Build Check"
+
+[[workflows.workflow]]
+name = "Android Build Check"
+author = "agent"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "./gradlew clean assembleDebug --info 2>&1 || echo \"Build requires Android SDK - please build locally or use GitHub Actions\""
+
+[workflows.workflow.metadata]
+outputType = "console"

@@ -3,9 +3,7 @@ package com.dynamicisland.android.service
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
 import android.animation.AnimatorSet
-import android.animation.ObjectAnimator
 import android.animation.ValueAnimator
-import android.app.Notification
 import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.PendingIntent
@@ -33,11 +31,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.core.app.NotificationCompat
-import androidx.core.content.ContextCompat
 import com.dynamicisland.android.R
 import com.dynamicisland.android.ui.MainActivity
 import com.dynamicisland.android.util.AppUtils
-import com.dynamicisland.android.util.BlurHelper
 import com.dynamicisland.android.util.PreferencesManager
 
 class OverlayService : Service() {
@@ -73,6 +69,8 @@ class OverlayService : Service() {
     
     private val handler = Handler(Looper.getMainLooper())
     private var hideRunnable: Runnable? = null
+    
+    private var blurBackgroundView: View? = null
     
     private val notificationRemovedReceiver = object : BroadcastReceiver() {
         override fun onReceive(context: Context?, intent: Intent?) {
@@ -211,13 +209,17 @@ class OverlayService : Service() {
             showOverlay()
         }
         
+        applyBlurBackground(false)
+        
         scheduleHide()
     }
     
     private fun createOverlayView() {
         overlayView = LayoutInflater.from(this).inflate(R.layout.dynamic_island_layout, null)
         
-        var layoutParams = WindowManager.LayoutParams(
+        blurBackgroundView = overlayView?.findViewById(R.id.blurBackground)
+        
+        val layoutParams = WindowManager.LayoutParams(
             dpToPx(COLLAPSED_WIDTH_DP),
             dpToPx(COLLAPSED_HEIGHT_DP),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -235,10 +237,6 @@ class OverlayService : Service() {
             y = dpToPx(12)
         }
         
-        layoutParams = BlurHelper.configureBlurLayoutParams(layoutParams)
-        
-        applyBlurEffect(false)
-        
         setupTouchListener()
         
         try {
@@ -249,11 +247,18 @@ class OverlayService : Service() {
         }
     }
     
-    private fun applyBlurEffect(isExpanded: Boolean) {
+    private fun applyBlurBackground(isExpanded: Boolean) {
+        blurBackgroundView?.apply {
+            val backgroundRes = if (isExpanded) {
+                R.drawable.dynamic_island_blur_expanded
+            } else {
+                R.drawable.dynamic_island_blur_background
+            }
+            setBackgroundResource(backgroundRes)
+        }
+        
         overlayView?.findViewById<CardView>(R.id.dynamicIslandCard)?.apply {
-            val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg_blur)
-            setCardBackgroundColor(bgColor)
-            BlurHelper.applyBlurToCardView(this, isExpanded)
+            cardElevation = if (isExpanded) 16f else 12f
         }
     }
     
@@ -362,6 +367,7 @@ class OverlayService : Service() {
                 Log.e(TAG, "Error removing overlay view", e)
             }
         }
+        blurBackgroundView = null
         overlayView = null
         isShowing = false
         isExpanded = false
@@ -381,7 +387,7 @@ class OverlayService : Service() {
             findViewById<LinearLayout>(R.id.collapsedView)?.visibility = View.GONE
             findViewById<LinearLayout>(R.id.expandedView)?.visibility = View.VISIBLE
             
-            applyBlurEffect(true)
+            applyBlurBackground(true)
             
             val params = layoutParams as WindowManager.LayoutParams
             
@@ -419,7 +425,7 @@ class OverlayService : Service() {
         overlayView?.apply {
             val params = layoutParams as WindowManager.LayoutParams
             
-            applyBlurEffect(false)
+            applyBlurBackground(false)
             
             val widthAnimator = ValueAnimator.ofInt(params.width, dpToPx(COLLAPSED_WIDTH_DP))
             val heightAnimator = ValueAnimator.ofInt(params.height, dpToPx(COLLAPSED_HEIGHT_DP))
