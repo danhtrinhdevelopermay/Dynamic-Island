@@ -5,10 +5,10 @@
     <color name="primary_dark">#000000</color>
     <color name="accent">#007AFF</color>
     
-    <!-- Dynamic Island Colors - Solid Black like iOS -->
+    <!-- Dynamic Island Colors -->
     <color name="dynamic_island_bg">#000000</color>
-    <color name="dynamic_island_bg_blur">#000000</color>
-    <color name="dynamic_island_bg_blur_light">#000000</color>
+    <color name="dynamic_island_bg_blur">#801C1C1E</color>
+    <color name="dynamic_island_bg_blur_light">#661C1C1E</color>
     <color name="dynamic_island_text_primary">#FFFFFF</color>
     <color name="dynamic_island_text_secondary">#8E8E93</color>
     <color name="dynamic_island_divider">#3A3A3C</color>

@@ -217,7 +217,7 @@ class OverlayService : Service() {
     private fun createOverlayView() {
         overlayView = LayoutInflater.from(this).inflate(R.layout.dynamic_island_layout, null)
         
-        var layoutParams = WindowManager.LayoutParams(
+        val layoutParams = WindowManager.LayoutParams(
             dpToPx(COLLAPSED_WIDTH_DP),
             dpToPx(COLLAPSED_HEIGHT_DP),
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -235,12 +235,7 @@ class OverlayService : Service() {
             y = dpToPx(12)
         }
         
-        layoutParams = BlurHelper.configureBlurLayoutParams(
-            layoutParams,
-            BlurHelper.getCollapsedBlurRadius()
-        )
-        
-        updateCardBackgroundForBlur(false)
+        applyBlurEffect(false)
         
         setupTouchListener()
         
@@ -252,10 +247,22 @@ class OverlayService : Service() {
         }
     }
     
-    private fun updateCardBackgroundForBlur(isExpanded: Boolean) {
+    private fun applyBlurEffect(isExpanded: Boolean) {
         overlayView?.findViewById<CardView>(R.id.dynamicIslandCard)?.apply {
-            val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg)
-            setCardBackgroundColor(bgColor)
+            val blurRadius = if (isExpanded) {
+                BlurHelper.getExpandedBlurRadius()
+            } else {
+                BlurHelper.getCollapsedBlurRadius()
+            }
+            
+            if (BlurHelper.isBlurSupported()) {
+                val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg_blur)
+                setCardBackgroundColor(bgColor)
+                BlurHelper.applyBlurToCardView(this, blurRadius)
+            } else {
+                val bgColor = ContextCompat.getColor(context, R.color.dynamic_island_bg)
+                setCardBackgroundColor(bgColor)
+            }
         }
     }
     
@@ -383,7 +390,7 @@ class OverlayService : Service() {
             findViewById<LinearLayout>(R.id.collapsedView)?.visibility = View.GONE
             findViewById<LinearLayout>(R.id.expandedView)?.visibility = View.VISIBLE
             
-            updateCardBackgroundForBlur(true)
+            applyBlurEffect(true)
             
             val params = layoutParams as WindowManager.LayoutParams
             
@@ -421,7 +428,7 @@ class OverlayService : Service() {
         overlayView?.apply {
             val params = layoutParams as WindowManager.LayoutParams
             
-            updateCardBackgroundForBlur(false)
+            applyBlurEffect(false)
             
             val widthAnimator = ValueAnimator.ofInt(params.width, dpToPx(COLLAPSED_WIDTH_DP))
             val heightAnimator = ValueAnimator.ofInt(params.height, dpToPx(COLLAPSED_HEIGHT_DP))
